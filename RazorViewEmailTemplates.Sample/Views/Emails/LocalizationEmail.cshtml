@@ -1,0 +1,9 @@
+﻿@using Microsoft.Extensions.Localization
+@using RazorViewEmailTemplates.Sample.Resources
+
+@model LocalizationEmailModel
+@inject IStringLocalizer<Resource> localizer
+
+<div>
+    @localizer["LocalizationEmail_Welcome", Model.Name]
+</div>
