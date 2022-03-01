@@ -21,9 +21,24 @@ namespace RestoreMonarchy.RazorViewEmailTemplates.Services
             {
                 CultureInfo.CurrentCulture = template.Culture;
                 CultureInfo.CurrentUICulture = template.Culture;
-            }   
+            }
+
+            Dictionary<string, object> viewData = new();
+                        
+            if (!string.IsNullOrEmpty(template.BaseUrl))
+            {
+                viewData.Add("BaseUrl", template.BaseUrl);
+            }
+
+            if (template.ViewData != null)
+            {
+                foreach (KeyValuePair<string, object> data in template.ViewData)
+                {
+                    viewData.Add(data.Key, data.Value);
+                }
+            }
             
-            string html = await renderer.RenderViewToStringAsync(template.ViewName, model);
+            string html = await renderer.RenderViewToStringAsync(template.ViewName, model, viewData);
             
             if (template.Culture != null)
             {

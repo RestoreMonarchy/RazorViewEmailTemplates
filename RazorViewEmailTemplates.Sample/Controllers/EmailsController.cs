@@ -19,7 +19,7 @@ namespace RazorViewEmailTemplates.Sample.Controllers
         [HttpGet("default")]
         public async Task<IActionResult> GetDefaultEmailAsync([FromQuery] string message = "Hello World!")
         {
-            EmailTemplateBuilder etb = new EmailTemplateBuilder();
+            EmailTemplateBuilder etb = new();
             
             etb.SetViewName("/Views/Emails/DefaultEmail.cshtml");
             
@@ -38,19 +38,47 @@ namespace RazorViewEmailTemplates.Sample.Controllers
         public async Task<IActionResult> GetLocalizationEmailAsync([FromQuery] string name = "Giovanni Giorgio", 
             [FromQuery] string culture = "en-US")
         {
-            EmailTemplateBuilder etb = new EmailTemplateBuilder();
+            EmailTemplateBuilder etb = new();
 
             etb.SetCulture(culture);
             etb.SetViewName("/Views/Emails/LocalizationEmail.cshtml");
 
             IEmailTemplate template = etb.Build();
             
-            LocalizationEmailModel model = new LocalizationEmailModel()
+            LocalizationEmailModel model = new()
             {
                 Name = name
             };
 
             string html = await emailHtmlGenerator.GenerateEmailAsync(template, model);
+            return Content(html);
+        }
+
+        [HttpGet("baseurl")]
+        public async Task<IActionResult> GetBaseUrlEmailAsync()
+        {
+            EmailTemplateBuilder etb = new();
+
+            etb.SetViewName("/Views/Emails/BaseUrlEmail.cshtml");
+            etb.WithBaseUrl("http://localhost:44341");
+            
+            IEmailTemplate template = etb.Build();
+
+            string html = await emailHtmlGenerator.GenerateEmailAsync(template);
+            return Content(html);
+        }
+
+        [HttpGet("viewdata")]
+        public async Task<IActionResult> GetViewDataEmailAsync()
+        {
+            EmailTemplateBuilder etb = new();
+
+            etb.SetViewName("/Views/Emails/ViewDataEmail.cshtml");
+            etb.AddViewData("Brand", "RestoreMonarchy");
+
+            IEmailTemplate template = etb.Build();
+
+            string html = await emailHtmlGenerator.GenerateEmailAsync(template);
             return Content(html);
         }
     }

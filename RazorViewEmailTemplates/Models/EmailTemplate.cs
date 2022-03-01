@@ -11,5 +11,7 @@ namespace RestoreMonarchy.RazorViewEmailTemplates.Models
     {
         public string ViewName { get; internal set; }
         public CultureInfo Culture { get; internal set; }
+        public string BaseUrl { get; internal set; }
+        public Dictionary<string, object> ViewData { get; set; }
     }
 }

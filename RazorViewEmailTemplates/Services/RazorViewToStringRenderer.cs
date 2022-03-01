@@ -27,32 +27,36 @@ namespace RestoreMonarchy.RazorViewEmailTemplates.Services
             this.serviceProvider = serviceProvider;
         }
 
-        public async Task<string> RenderViewToStringAsync(string viewName, object model)
+        public async Task<string> RenderViewToStringAsync(string viewName, object model, Dictionary<string, object> viewData)
         {
-            var actionContext = GetActionContext();
-            var view = FindView(actionContext, viewName);
+            ActionContext actionContext = GetActionContext();
+            IView view = FindView(actionContext, viewName);
 
-            using (StringWriter output = new StringWriter())
+            using StringWriter output = new StringWriter();
+
+            ViewDataDictionary viewDataDict = new(new EmptyModelMetadataProvider(), new ModelStateDictionary())
             {
-                var viewContext = new ViewContext(
-                    actionContext,
-                    view,
-                    new ViewDataDictionary(
-                        metadataProvider: new EmptyModelMetadataProvider(),
-                        modelState: new ModelStateDictionary())
-                    {
-                        Model = model
-                    },
-                    new TempDataDictionary(
-                        actionContext.HttpContext,
-                        tempDataProvider),
-                    output,
-                    new HtmlHelperOptions());
+                Model = model
+            };
 
-                await view.RenderAsync(viewContext);
-
-                return output.ToString();
+            foreach (KeyValuePair<string, object> data in viewData)
+            {
+                viewDataDict.Add(data);
             }
+
+            TempDataDictionary tempDataDict = new(actionContext.HttpContext, tempDataProvider);
+
+            ViewContext viewContext = new(
+                actionContext,
+                view,
+                viewDataDict,
+                tempDataDict,
+                output,
+                new HtmlHelperOptions());
+
+            await view.RenderAsync(viewContext);
+
+            return output.ToString();
         }
 
         private IView FindView(ActionContext actionContext, string viewName)

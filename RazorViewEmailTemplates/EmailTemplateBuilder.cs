@@ -9,7 +9,10 @@ namespace RestoreMonarchy.RazorViewEmailTemplates
 
         public EmailTemplateBuilder()
         {
-            emailTemplate = new EmailTemplate();
+            emailTemplate = new EmailTemplate() 
+            { 
+                ViewData = new Dictionary<string, object>()
+            };
         }
 
         public EmailTemplateBuilder SetViewName(string viewName)
@@ -22,6 +25,18 @@ namespace RestoreMonarchy.RazorViewEmailTemplates
         {
             CultureInfo cultureInfo = CultureInfo.GetCultureInfo(cultureName);
             emailTemplate.Culture = cultureInfo;
+            return this;
+        }
+
+        public EmailTemplateBuilder WithBaseUrl(string baseUrl)
+        {
+            emailTemplate.BaseUrl = baseUrl;
+            return this;
+        }
+
+        public EmailTemplateBuilder AddViewData(string key, object value)
+        {
+            emailTemplate.ViewData.Add(key, value);
             return this;
         }
 
