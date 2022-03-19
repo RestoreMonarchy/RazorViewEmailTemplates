@@ -1,6 +1,7 @@
 # RazorViewEmailTemplates
 HTML Email Templates with Razor views
 
+NuGet: https://www.nuget.org/packages/RazorViewEmailTemplates/
 
 Class Library project that can be useful when generating HTML for email body from Razor views.
 
